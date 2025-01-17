@@ -1,6 +1,6 @@
-variable "disk_image" {
+variable "image_url" {
   type = string
-  default = "ami-0c1bea58988a989155"
+  default = "https://example.com/docker"
 }
 
 variable "state" {
@@ -8,19 +8,19 @@ variable "state" {
   default = "running"
 }
 
-variable "machine_name" {
+variable "cluster_name" {
   type = string
   default = "devpod-devpod"
 }
 
-variable "disk_size" {
+variable "memory_allocation" {
   type = string
-  default = "50"
+  default = "2"
 }
 
-variable "instance_type" {
+variable "launch_type" {
   type = string
-  default = "t2.micro"
+  default = "FARGATE"
 }
 
 variable "vpc" {
@@ -100,5 +100,6 @@ EOF
 }
 
 output "public_ip" {
+  //TODO - modify output to point at right IP from ECS task
   value = aws_instance.devpod.public_ip
 }

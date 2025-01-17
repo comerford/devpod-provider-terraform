@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/loft-sh/devpod-provider-terraform/pkg/terraform"
+	"github.com/comerford/devpod-provider-terraform/pkg/terraform"
 
 	"github.com/loft-sh/devpod/pkg/log"
 	"github.com/loft-sh/devpod/pkg/provider"

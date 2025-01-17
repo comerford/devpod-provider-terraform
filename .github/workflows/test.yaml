@@ -23,13 +23,13 @@ jobs:
           export RELEASE_VERSION=0.0.0
           chmod +x ./hack/build.sh
           ./hack/build.sh
-          sed -i "s|https://github.com/loft-sh/devpod-provider-.*/releases/download/0.0.0/|$(pwd)/release/|g" release/provider.yaml
+          sed -i "s|https://github.com/comerford/devpod-provider-.*/releases/download/0.0.0/|$(pwd)/release/|g" release/provider.yaml
       - name: Run provider
         run: |
           ./release/devpod-provider-terraform-linux-amd64
       - name: Install devpod
         run: |
-          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64"
+          curl -L -o devpod "https://github.com/comerford/devpod/releases/latest/download/devpod-linux-amd64"
           chmod +x devpod
       - name: Install devpod provider
         run: |

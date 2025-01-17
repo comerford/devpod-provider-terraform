@@ -1,14 +1,14 @@
-# TERRAFORM Provider for DevPod
+# TERRAFORM Provider for DevPod modified to use ECS rather than EC2
 
-[![Join us on Slack!](docs/static/media/slack.svg)](https://slack.loft.sh/) [![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/loft-sh/devpod-provider-terraform)
+The [original version](https://github.com/loft-sh/devpod-provider-terraform/) of this provider provisions an EC2 instance to run Devpod, this one provisions and uses an ECS cluster instead
 
 ## Getting started
 
 The provider is available for auto-installation using 
 
 ```sh
-devpod provider add terraform
-devpod provider use terraform
+devpod provider add comerford/devpod-provider-terraform -o TERRAFORM_PROJECT=$PROJECT_LOCATION -o REGION=$AWS_REGION
+devpod provider use comerford/devpod-provider-terraform
 ```
 
 Follow the on-screen instructions to complete the setup.
@@ -36,26 +36,28 @@ You'll need to wait for the machine and environment setup.
 ### Notes
 
 With the terraform provider, all the power is in the terraform project. So it
-will be there where you will place your defaults for
+will be there where you will place your defaults for these variables:
 
-- DISK_SIZE
-- IMAGE_DISK
-- INSTANCE_TYPE
+- IMAGE_URL
+- MEM_ALLOCATION
+- CPU_ALLOCATION
 
-Keep also in mind that **stop/start is not supported right now on terraform provider**
+The memory and CPU allocations will need to be one of the valid combinations for FARGATE
+
+Note that **stop/start is not supported right now on terraform provider**
 So the right thing to do is to handle data saving inside your terraform code
 (eg. use external data buckets)
 
-### Customize the VM Instance
+### Customize the ECS Cluster
 
-This provides has the seguent options
+This provider has the following options:
 
 |    NAME           | REQUIRED |          DESCRIPTION                  |         DEFAULT         |
 |-------------------|----------|---------------------------------------|-------------------------|
-| DISK_SIZE                 | false    | The disk size to use.                 | 40  |
-| IMAGE_DISK                | false    | The disk image to use.                |     |
-| INSTANCE_TYPE             | false    | The machine type to use.              |     |
-| REGION                    | true     | The cloud region to create the        |     |
+| MEM_ALLOCATION            | false    | The amount of memory to use.                 | 40  |
+| IMAGE_URL                 | false    | The container image to use.                |     |
+| LAUNCH_TYPE               | false    | The launch type to use for the cluster             | FARGATE    |
+| REGION                    | true     | The AWS region to create the        |     |
 |                           |          | VM in. E.g. us-west-1                 |     |
 | TERRAFORM_PROJECT         | true     | The path or repo where the            |     |
 |                           |          | terraform files are. E.g.             |     |

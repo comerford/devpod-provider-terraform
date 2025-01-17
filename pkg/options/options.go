@@ -7,27 +7,27 @@ import (
 
 const (
 	REGION            = "REGION"
-	INSTANCE_TYPE     = "INSTANCE_TYPE"
-	IMAGE_DISK        = "IMAGE_DISK"
-	DISK_SIZE         = "DISK_SIZE"
+	LAUNCH_TYPE       = "LAUNCH_TYPE"
+	IMAGE_URL         = "IMAGE_URL"
+	MEM_ALLOCATION    = "MEM_ALLOCATION"
 	TERRAFORM_PROJECT = "TERRAFORM_PROJECT"
 )
 
 type Options struct {
-	DiskImage     string
-	DiskSizeGB    string
-	MachineFolder string
-	MachineID     string
-	MachineType   string
-	Zone          string
+	ImageUrl        string
+	MemAllocationGB string
+	ClusterFolder   string
+	ClusterID       string
+	LaunchType      string
+	Zone            string
 }
 
 func ConfigFromEnv() (Options, error) {
 	return Options{
-		MachineType: os.Getenv(INSTANCE_TYPE),
-		DiskImage:   os.Getenv(IMAGE_DISK),
-		DiskSizeGB:  os.Getenv(DISK_SIZE),
-		Zone:        os.Getenv(REGION),
+		LaunchType:       os.Getenv(LAUNCH_TYPE),
+		ImageUrl:         os.Getenv(IMAGE_URL),
+		MemAllocationGB:  os.Getenv(MEM_ALLOCATION),
+		Zone:             os.Getenv(REGION),
 	}, nil
 }
 
@@ -36,29 +36,29 @@ func FromEnv() (*Options, error) {
 
 	var err error
 
-	retOptions.MachineID, err = FromEnvOrError("MACHINE_ID")
+	retOptions.ClusterID, err = FromEnvOrError("CLUSTER_ID")
 	if err != nil {
 		return nil, err
 	}
 	// prefix with devpod-
-	retOptions.MachineID = "devpod-" + retOptions.MachineID
+	retOptions.ClusterID = "devpod-" + retOptions.ClusterID
 
-	retOptions.MachineFolder, err = FromEnvOrError("MACHINE_FOLDER")
+	retOptions.ClusterFolder, err = FromEnvOrError("MACHINE_FOLDER")
 	if err != nil {
 		return nil, err
 	}
 
-	retOptions.MachineType, err = FromEnvOrError("INSTANCE_TYPE")
+	retOptions.LaunchType, err = FromEnvOrError("LAUNCH_TYPE")
 	if err != nil {
 		return nil, err
 	}
 
-	retOptions.DiskImage, err = FromEnvOrError("IMAGE_DISK")
+	retOptions.ImageUrl, err = FromEnvOrError("IMAGE_URL")
 	if err != nil {
 		return nil, err
 	}
 
-	retOptions.DiskSizeGB, err = FromEnvOrError("DISK_SIZE")
+	retOptions.MemAllocationGB, err = FromEnvOrError("MEM_ALLOCATION")
 	if err != nil {
 		return nil, err
 	}

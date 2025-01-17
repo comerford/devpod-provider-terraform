@@ -48,8 +48,8 @@ func NewProvider(logs log.Logger) (*TerraformProvider, error) {
 		Log:        logs,
 		Bin:        terraformPath,
 		Project:    project,
-		State:      providerConfig.MachineFolder + "/main.tfstate",
-		WorkingDir: providerConfig.MachineFolder + "/.terraform",
+		State:      providerConfig.ClusterFolder + "/main.tfstate",
+		WorkingDir: providerConfig.ClusterFolder + "/.terraform",
 	}
 
 	return provider, nil
@@ -66,7 +66,7 @@ type TerraformProvider struct {
 
 func EnsureProject(providerTerraform *TerraformProvider) error {
 	// if project is already in place, exit
-	_, err := os.Stat(providerTerraform.Config.MachineFolder + "/.terraform")
+	_, err := os.Stat(providerTerraform.Config.ClusterFolder + "/.terraform")
 	if err == nil {
 		return nil
 	}
@@ -78,7 +78,7 @@ func EnsureProject(providerTerraform *TerraformProvider) error {
 			"git",
 			"clone",
 			providerTerraform.Project,
-			providerTerraform.Config.MachineFolder+"/.terraform",
+			providerTerraform.Config.ClusterFolder+"/.terraform",
 		)
 		return cmd.Run()
 	}
@@ -90,7 +90,7 @@ func EnsureProject(providerTerraform *TerraformProvider) error {
 	}
 
 	err = cp.Copy(providerTerraform.Project,
-		providerTerraform.Config.MachineFolder+"/.terraform")
+		providerTerraform.Config.ClusterFolder+"/.terraform")
 	if err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func Init(providerTerraform *TerraformProvider) (*tfexec.Terraform, error) {
 		return nil, err
 	}
 
-	workingDir := providerTerraform.Config.MachineFolder + "/.terraform"
+	workingDir := providerTerraform.Config.ClusterFolder + "/.terraform"
 	tf, err := tfexec.NewTerraform(workingDir, providerTerraform.Bin)
 	if err != nil {
 		return nil, err
@@ -166,7 +166,7 @@ func Delete(providerTerraform *TerraformProvider) error {
 
 func Command(providerTerraform *TerraformProvider, command string) error {
 	// get private key
-	privateKey, err := ssh.GetPrivateKeyRawBase(providerTerraform.Config.MachineFolder)
+	privateKey, err := ssh.GetPrivateKeyRawBase(providerTerraform.Config.ClusterFolder)
 
 	if err != nil {
 		return fmt.Errorf("load private key: %w", err)
@@ -177,7 +177,7 @@ func Command(providerTerraform *TerraformProvider, command string) error {
 	if err != nil || externalIP == "" {
 		return fmt.Errorf(
 			"instance %s doesn't have an external nat ip",
-			providerTerraform.Config.MachineID,
+			providerTerraform.Config.ClusterID,
 		)
 	}
 
@@ -199,7 +199,7 @@ func Create(providerTerraform *TerraformProvider) error {
 		return err
 	}
 
-	publicKeyBase, err := ssh.GetPublicKeyBase(providerTerraform.Config.MachineFolder)
+	publicKeyBase, err := ssh.GetPublicKeyBase(providerTerraform.Config.ClusterFolder)
 	if err != nil {
 		return err
 	}
@@ -217,7 +217,7 @@ func Create(providerTerraform *TerraformProvider) error {
 		tfexec.Var("disk_image="+providerTerraform.Config.DiskImage),
 		tfexec.Var("disk_size="+providerTerraform.Config.DiskSizeGB),
 		tfexec.Var("instance_type="+providerTerraform.Config.MachineType),
-		tfexec.Var("machine_name="+providerTerraform.Config.MachineID),
+		tfexec.Var("machine_name="+providerTerraform.Config.ClusterID),
 		tfexec.Var("region="+providerTerraform.Config.Zone),
 		tfexec.Var("ssh_key="+string(publicKey)),
 	)
@@ -230,7 +230,7 @@ func Create(providerTerraform *TerraformProvider) error {
 		tfexec.Var("disk_image="+providerTerraform.Config.DiskImage),
 		tfexec.Var("disk_size="+providerTerraform.Config.DiskSizeGB),
 		tfexec.Var("instance_type="+providerTerraform.Config.MachineType),
-		tfexec.Var("machine_name="+providerTerraform.Config.MachineID),
+		tfexec.Var("machine_name="+providerTerraform.Config.ClusterID),
 		tfexec.Var("region="+providerTerraform.Config.Zone),
 		tfexec.Var("ssh_key="+string(publicKey)),
 	)
@@ -267,7 +267,7 @@ func Status(providerTerraform *TerraformProvider) (client.Status, error) {
 		return client.StatusNotFound, err
 	}
 
-	publicKeyBase, err := ssh.GetPublicKeyBase(providerTerraform.Config.MachineFolder)
+	publicKeyBase, err := ssh.GetPublicKeyBase(providerTerraform.Config.ClusterFolder)
 	if err != nil {
 		return client.StatusNotFound, err
 	}
@@ -282,7 +282,7 @@ func Status(providerTerraform *TerraformProvider) (client.Status, error) {
 		tfexec.Var("disk_image="+providerTerraform.Config.DiskImage),
 		tfexec.Var("disk_size="+providerTerraform.Config.DiskSizeGB),
 		tfexec.Var("instance_type="+providerTerraform.Config.MachineType),
-		tfexec.Var("machine_name="+providerTerraform.Config.MachineID),
+		tfexec.Var("machine_name="+providerTerraform.Config.ClusterID),
 		tfexec.Var("region="+providerTerraform.Config.Zone),
 		tfexec.Var("ssh_key="+string(publicKey)),
 	)

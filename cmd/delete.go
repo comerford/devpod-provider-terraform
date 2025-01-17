@@ -3,8 +3,7 @@ package cmd
 import (
 	"context"
 
-	"github.com/loft-sh/devpod-provider-terraform/pkg/terraform"
-
+	"github.com/comerford/devpod-provider-terraform/pkg/terraform"
 	"github.com/loft-sh/devpod/pkg/log"
 	"github.com/loft-sh/devpod/pkg/provider"
 	"github.com/spf13/cobra"
